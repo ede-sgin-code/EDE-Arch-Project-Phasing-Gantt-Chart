@@ -39,13 +39,13 @@ function emptyPhase(name, color) {
   };
 }
 
-export function createSubPhase(name, parentId, color = SUB_PHASE_DEFAULT_COLOR) {
+export function createSubPhase(name, parentId, color = SUB_PHASE_DEFAULT_COLOR, startDate = null) {
   return {
     id: generateId(),
     name,
     type: 'sub',
     parentId,
-    startDate: null,
+    startDate,
     endDate: null,
     color,
     locked: false,
