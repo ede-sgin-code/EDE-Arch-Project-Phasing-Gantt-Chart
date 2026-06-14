@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
-import { parseISODate, toISODate, addDays, diffInDays, getToday, dateToX, getPhaseStatus, clampDateRange } from '../../lib/dateUtils';
-import { PIXELS_PER_DAY } from '../../lib/ganttConfig';
+import { parseISODate, toISODate, addDays, diffInDays, getToday, dateToX, getPhaseStatus, clampDateRange, formatShortDate } from '../../lib/dateUtils';
+import { PIXELS_PER_DAY, MIN_BAR_WIDTH_FOR_DATE_LABELS } from '../../lib/ganttConfig';
+import { getContrastTextColor } from '../../lib/colorUtils';
 import ColorPicker from './ColorPicker';
 
 export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, onPhaseChange, onAddSubPhase, onDeletePhase }) {
@@ -13,6 +14,10 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
   const barWidth = hasDates ? dateToX(parseISODate(phase.endDate), range.start) - barLeft : 0;
   const status = !editMode ? getPhaseStatus(phase) : null;
   const durationDays = hasDates ? diffInDays(parseISODate(phase.startDate), parseISODate(phase.endDate)) : '';
+  const textColor = hasDates ? getContrastTextColor(phase.color) : null;
+  const showInlineDates = hasDates && barWidth >= MIN_BAR_WIDTH_FOR_DATE_LABELS;
+  const startLabel = hasDates ? formatShortDate(parseISODate(phase.startDate)) : '';
+  const endLabel = hasDates ? formatShortDate(parseISODate(phase.endDate)) : '';
 
   function handleNameChange(e) {
     onPhaseChange(phase.id, { name: e.target.value });
@@ -233,22 +238,44 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
       </div>
       <div className="gantt-timeline-cell">
         {hasDates ? (
-          <div
-            className="phase-bar"
-            style={{ left: barLeft, width: barWidth, backgroundColor: phase.color }}
-            onMouseDown={draggable ? handleBarMouseDown : undefined}
-          >
-            <div className="phase-bar-progress" style={{ width: `${phase.percentComplete}%` }} />
-            {draggable && (
-              <>
-                <div className="resize-handle resize-handle-left" onMouseDown={handleResizeLeftMouseDown} />
-                <div className="resize-handle resize-handle-right" onMouseDown={handleResizeRightMouseDown} />
-              </>
+          <>
+            <div
+              className="phase-bar"
+              style={{ left: barLeft, width: barWidth, backgroundColor: phase.color }}
+              onMouseDown={draggable ? handleBarMouseDown : undefined}
+            >
+              <div className="phase-bar-progress" style={{ width: `${phase.percentComplete}%` }} />
+              {draggable && (
+                <>
+                  <div className="resize-handle resize-handle-left" onMouseDown={handleResizeLeftMouseDown} />
+                  <div className="resize-handle resize-handle-right" onMouseDown={handleResizeRightMouseDown} />
+                </>
+              )}
+              {showInlineDates && (
+                <>
+                  <span className="bar-date-label bar-date-start" style={{ color: textColor }}>
+                    [{startLabel}
+                  </span>
+                  <span className="bar-date-label bar-date-end" style={{ color: textColor }}>
+                    {endLabel}]
+                  </span>
+                </>
+              )}
+            </div>
+            {!showInlineDates && (
+              <div className="bar-date-tooltip" style={{ left: barLeft + barWidth / 2 }}>
+                [{startLabel} - {endLabel}]
+              </div>
             )}
             {status && (
-              <span className={`phase-status${status.overdue ? ' overdue' : ''}`}>{status.label}</span>
+              <span
+                className={`phase-status${status.overdue ? ' overdue' : ''}`}
+                style={{ left: barLeft + barWidth + 8 }}
+              >
+                {status.label}
+              </span>
             )}
-          </div>
+          </>
         ) : (
           <span className="no-dates-placeholder">{editMode ? 'Set dates →' : 'No dates set'}</span>
         )}

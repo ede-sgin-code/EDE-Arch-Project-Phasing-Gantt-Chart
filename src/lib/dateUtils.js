@@ -87,6 +87,33 @@ export function getMonthMarkers(range) {
   return markers;
 }
 
+// Returns one marker per calendar week within each month covered by the
+// range (numbered 1-N per month, so the count reflects each month's actual
+// number of weeks - usually 4, sometimes 5), with pixel offsets clamped to 0.
+export function getWeekMarkers(range) {
+  const markers = [];
+  let cursor = new Date(range.start.getFullYear(), range.start.getMonth(), 1);
+  while (cursor <= range.end) {
+    const nextMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    const daysInMonth = diffInDays(cursor, nextMonth);
+    let weekNumber = 1;
+    for (let offset = 0; offset < daysInMonth; offset += 7) {
+      markers.push({
+        x: Math.max(0, dateToX(addDays(cursor, offset), range.start)),
+        label: `Week ${weekNumber}`,
+      });
+      weekNumber += 1;
+    }
+    cursor = nextMonth;
+  }
+  return markers;
+}
+
+// Formats a date as "Jan 1" for compact bar-edge labels.
+export function formatShortDate(date) {
+  return date.toLocaleString('default', { month: 'short', day: 'numeric' });
+}
+
 // Returns a status label for a phase relative to today, or null if the
 // phase has no dates set yet.
 export function getPhaseStatus(phase, today = getToday()) {

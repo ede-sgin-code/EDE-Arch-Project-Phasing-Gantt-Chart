@@ -1,4 +1,4 @@
-import { getProjectDateRange, getMonthMarkers, dateToX } from '../../lib/dateUtils';
+import { getProjectDateRange, getMonthMarkers, getWeekMarkers, dateToX } from '../../lib/dateUtils';
 import { ROW_HEIGHT, ROW_HEIGHT_EDITING, HEADER_HEIGHT, LABEL_WIDTH, LABEL_WIDTH_EDITING } from '../../lib/ganttConfig';
 import TimelineHeader from './TimelineHeader';
 import PhaseRow from './PhaseRow';
@@ -13,13 +13,14 @@ export default function GanttChart({ phases, editMode, onPhaseChange, onAddSubPh
   const totalWidth = labelWidth + chartWidth;
   const bodyHeight = phases.length * rowHeight;
   const monthMarkers = getMonthMarkers(range);
+  const weekMarkers = getWeekMarkers(range);
 
   return (
     <div className="gantt-chart" style={{ width: totalWidth }}>
       <div className="gantt-header-row" style={{ height: HEADER_HEIGHT }}>
         <div className="gantt-label-cell" style={{ flexBasis: labelWidth, width: labelWidth }} />
         <div className="gantt-timeline-cell">
-          <TimelineHeader markers={monthMarkers} />
+          <TimelineHeader monthMarkers={monthMarkers} weekMarkers={weekMarkers} />
         </div>
       </div>
       <div className="gantt-body" style={{ height: bodyHeight }}>

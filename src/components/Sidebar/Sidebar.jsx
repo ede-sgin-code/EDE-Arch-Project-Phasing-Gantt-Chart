@@ -2,7 +2,7 @@ import ProjectList from './ProjectList';
 import NewProjectButton from './NewProjectButton';
 import './Sidebar.css';
 
-export default function Sidebar({ projects, selectedProjectId, onSelect, onNewProject, onDeleteProject, onResetDemo }) {
+export default function Sidebar({ projects, selectedProjectId, onSelect, onNewProject, onRenameProject, onDeleteProject, onResetDemo }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -13,6 +13,7 @@ export default function Sidebar({ projects, selectedProjectId, onSelect, onNewPr
         projects={projects}
         selectedProjectId={selectedProjectId}
         onSelect={onSelect}
+        onRename={onRenameProject}
         onDelete={onDeleteProject}
       />
       <button type="button" className="reset-demo-btn" onClick={onResetDemo}>

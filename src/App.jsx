@@ -59,6 +59,13 @@ function App() {
     setSelectedProjectId(project.id);
   }
 
+  function handleRenameProject(id, name) {
+    setData((d) => ({
+      ...d,
+      projects: d.projects.map((p) => (p.id === id ? { ...p, name } : p)),
+    }));
+  }
+
   function handleDeleteProject(id) {
     const remaining = data.projects.filter((p) => p.id !== id);
     setData((d) => ({ ...d, projects: d.projects.filter((p) => p.id !== id) }));
@@ -135,6 +142,7 @@ function App() {
         selectedProjectId={selectedProjectId}
         onSelect={handleSelectProject}
         onNewProject={handleNewProject}
+        onRenameProject={handleRenameProject}
         onDeleteProject={handleDeleteProject}
         onResetDemo={handleResetDemo}
       />

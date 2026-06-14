@@ -107,6 +107,17 @@
   font-weight: 600;
 }
 
+.project-rename-input {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text);
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  padding: 9px 10px;
+  min-width: 0;
+}
+
+.project-rename-btn,
 .project-delete-btn {
   background: transparent;
   border: none;
@@ -118,8 +129,18 @@
   visibility: hidden;
 }
 
+.project-rename-btn {
+  font-size: 13px;
+}
+
+.project-list li:hover .project-rename-btn,
 .project-list li:hover .project-delete-btn {
   visibility: visible;
+}
+
+.project-rename-btn:hover {
+  color: var(--color-accent);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .project-delete-btn:hover {
