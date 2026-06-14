@@ -1,0 +1,308 @@
+.gantt-chart {
+  position: relative;
+}
+
+.gantt-header-row,
+.gantt-row {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.gantt-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--color-bg);
+}
+
+.gantt-label-cell {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.gantt-row-sub .gantt-label-cell {
+  padding-left: 32px;
+}
+
+.gantt-timeline-cell {
+  position: relative;
+  flex: 1;
+}
+
+.gantt-body {
+  position: relative;
+}
+
+/* Timeline header */
+.timeline-header {
+  position: relative;
+  height: 100%;
+}
+
+.timeline-month {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-left: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.month-gridline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+/* Phase label content */
+.phase-label-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.phase-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phase-name-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.phase-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.icon-btn-danger:hover {
+  background: #fee2e2;
+  border-color: var(--color-danger);
+}
+
+.color-picker {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.phase-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-fields-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  gap: 2px;
+}
+
+.field-label input[type='date'] {
+  font-size: 12px;
+  padding: 3px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  width: 122px;
+}
+
+.percent-input,
+.duration-input {
+  font-size: 12px;
+  padding: 3px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  width: 56px;
+}
+
+.add-subphase-btn {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.add-subphase-btn:hover {
+  text-decoration: underline;
+}
+
+.add-subphase-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.add-subphase-form input {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  padding: 3px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.add-subphase-form button {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Phase bars */
+.phase-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  z-index: 1;
+}
+
+.phase-bar-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 4px 0 0 4px;
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: ew-resize;
+  z-index: 2;
+}
+
+.resize-handle-left {
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.resize-handle-right {
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.resize-handle:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.phase-status {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 8px);
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.phase-status.overdue {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.no-dates-placeholder {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Today line */
+.today-overlay {
+  position: absolute;
+  top: 0;
+  background: rgba(148, 163, 184, 0.35);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.today-line {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  background: #475569;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.today-line-label {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}

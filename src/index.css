@@ -1,0 +1,37 @@
+:root {
+  --color-bg: #ffffff;
+  --color-sidebar-bg: #f7f7f8;
+  --color-border: #e3e3e6;
+  --color-text: #1f2329;
+  --color-text-muted: #6b7280;
+  --color-accent: #7c3aed;
+  --color-accent-bg: #f3eaff;
+  --color-danger: #dc2626;
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
