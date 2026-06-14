@@ -1,17 +1,17 @@
 import { useRef, useState } from 'react';
 import { parseISODate, toISODate, addDays, diffInDays, getToday, dateToX, getPhaseStatus, clampDateRange, formatShortDate } from '../../lib/dateUtils';
-import { PIXELS_PER_DAY, MIN_BAR_WIDTH_FOR_DATE_LABELS } from '../../lib/ganttConfig';
+import { MIN_BAR_WIDTH_FOR_DATE_LABELS } from '../../lib/ganttConfig';
 import { getContrastTextColor } from '../../lib/colorUtils';
 import ColorPicker from './ColorPicker';
 
-export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, onPhaseChange, onAddSubPhase, onDeletePhase }) {
+export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase }) {
   const dragRef = useRef(null);
   const [addingSubPhase, setAddingSubPhase] = useState(false);
   const [subPhaseName, setSubPhaseName] = useState('');
 
   const hasDates = Boolean(phase.startDate && phase.endDate);
-  const barLeft = hasDates ? dateToX(parseISODate(phase.startDate), range.start) : 0;
-  const barWidth = hasDates ? dateToX(parseISODate(phase.endDate), range.start) - barLeft : 0;
+  const barLeft = hasDates ? dateToX(parseISODate(phase.startDate), range.start, pixelsPerDay) : 0;
+  const barWidth = hasDates ? dateToX(parseISODate(phase.endDate), range.start, pixelsPerDay) - barLeft : 0;
   const status = !editMode ? getPhaseStatus(phase) : null;
   const durationDays = hasDates ? diffInDays(parseISODate(phase.startDate), parseISODate(phase.endDate)) : '';
   const textColor = hasDates ? getContrastTextColor(phase.color) : null;
@@ -92,7 +92,7 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
   function handleDragMove(e) {
     const drag = dragRef.current;
     if (!drag) return;
-    const deltaDays = Math.round((e.clientX - drag.startX) / PIXELS_PER_DAY);
+    const deltaDays = Math.round((e.clientX - drag.startX) / pixelsPerDay);
     const origStart = parseISODate(drag.origStart);
     const origEnd = parseISODate(drag.origEnd);
 

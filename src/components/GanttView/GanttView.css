@@ -58,6 +58,45 @@
   background: #6d28d9;
 }
 
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 2px;
+  margin-right: 4px;
+}
+
+.zoom-btn {
+  border: none;
+  background: transparent;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.zoom-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.zoom-btn:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.zoom-level {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
 .gantt-scroll-container {
   flex: 1;
   overflow: auto;

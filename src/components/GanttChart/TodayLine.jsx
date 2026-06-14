@@ -1,7 +1,7 @@
 import { getToday, dateToX } from '../../lib/dateUtils';
 
-export default function TodayLine({ range, bodyHeight, labelWidth }) {
-  const todayX = dateToX(getToday(), range.start);
+export default function TodayLine({ range, pixelsPerDay, bodyHeight, labelWidth }) {
+  const todayX = dateToX(getToday(), range.start, pixelsPerDay);
 
   return (
     <>

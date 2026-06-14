@@ -5,15 +5,15 @@ import PhaseRow from './PhaseRow';
 import TodayLine from './TodayLine';
 import './GanttChart.css';
 
-export default function GanttChart({ phases, editMode, onPhaseChange, onAddSubPhase, onDeletePhase }) {
+export default function GanttChart({ phases, editMode, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase }) {
   const range = getProjectDateRange(phases);
-  const chartWidth = dateToX(range.end, range.start);
+  const chartWidth = dateToX(range.end, range.start, pixelsPerDay);
   const labelWidth = editMode ? LABEL_WIDTH_EDITING : LABEL_WIDTH;
   const rowHeight = editMode ? ROW_HEIGHT_EDITING : ROW_HEIGHT;
   const totalWidth = labelWidth + chartWidth;
   const bodyHeight = phases.length * rowHeight;
-  const monthMarkers = getMonthMarkers(range);
-  const weekMarkers = getWeekMarkers(range);
+  const monthMarkers = getMonthMarkers(range, pixelsPerDay);
+  const weekMarkers = getWeekMarkers(range, pixelsPerDay);
 
   return (
     <div className="gantt-chart" style={{ width: totalWidth }}>
@@ -32,6 +32,7 @@ export default function GanttChart({ phases, editMode, onPhaseChange, onAddSubPh
             editMode={editMode}
             rowHeight={rowHeight}
             labelWidth={labelWidth}
+            pixelsPerDay={pixelsPerDay}
             onPhaseChange={onPhaseChange}
             onAddSubPhase={onAddSubPhase}
             onDeletePhase={onDeletePhase}
@@ -40,7 +41,7 @@ export default function GanttChart({ phases, editMode, onPhaseChange, onAddSubPh
         {monthMarkers.map((m) => (
           <div key={m.label} className="month-gridline" style={{ left: labelWidth + m.x }} />
         ))}
-        <TodayLine range={range} bodyHeight={bodyHeight} labelWidth={labelWidth} />
+        <TodayLine range={range} pixelsPerDay={pixelsPerDay} bodyHeight={bodyHeight} labelWidth={labelWidth} />
       </div>
     </div>
   );

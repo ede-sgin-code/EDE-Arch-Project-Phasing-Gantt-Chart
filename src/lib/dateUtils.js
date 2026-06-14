@@ -1,4 +1,9 @@
-import { PIXELS_PER_DAY, TIMELINE_PADDING_DAYS } from './ganttConfig';
+import {
+  PIXELS_PER_DAY,
+  TIMELINE_PADDING_DAYS,
+  WEEK_LABEL_FULL_MIN_WIDTH,
+  WEEK_LABEL_ABBR_MIN_WIDTH,
+} from './ganttConfig';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -31,12 +36,12 @@ export function diffInDays(a, b) {
   return Math.round((bMid - aMid) / MS_PER_DAY);
 }
 
-export function dateToX(date, rangeStart) {
-  return diffInDays(rangeStart, date) * PIXELS_PER_DAY;
+export function dateToX(date, rangeStart, pixelsPerDay = PIXELS_PER_DAY) {
+  return diffInDays(rangeStart, date) * pixelsPerDay;
 }
 
-export function xToDate(x, rangeStart) {
-  const days = Math.round(x / PIXELS_PER_DAY);
+export function xToDate(x, rangeStart, pixelsPerDay = PIXELS_PER_DAY) {
+  const days = Math.round(x / pixelsPerDay);
   return addDays(rangeStart, days);
 }
 
@@ -74,12 +79,12 @@ export function getProjectDateRange(phases) {
 // Returns one marker per calendar month covered by the range, each with its
 // pixel offset (clamped to 0) and a "MMM YYYY" label, for header labels and
 // gridlines.
-export function getMonthMarkers(range) {
+export function getMonthMarkers(range, pixelsPerDay = PIXELS_PER_DAY) {
   const markers = [];
   let cursor = new Date(range.start.getFullYear(), range.start.getMonth(), 1);
   while (cursor <= range.end) {
     markers.push({
-      x: Math.max(0, dateToX(cursor, range.start)),
+      x: Math.max(0, dateToX(cursor, range.start, pixelsPerDay)),
       label: cursor.toLocaleString('default', { month: 'short', year: 'numeric' }),
     });
     cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
@@ -89,8 +94,19 @@ export function getMonthMarkers(range) {
 
 // Returns one marker per calendar week within each month covered by the
 // range (numbered 1-N per month, so the count reflects each month's actual
-// number of weeks - usually 4, sometimes 5), with pixel offsets clamped to 0.
-export function getWeekMarkers(range) {
+// number of weeks - usually 4, sometimes 5). Weeks that end before
+// range.start are skipped entirely (otherwise they'd all clamp to x=0 and
+// overlap); the single week that contains range.start, if any, is clamped
+// to x=0. The label format scales with the zoomed week-cell width: "Week N"
+// when there's room, "WN" at medium zoom, and just "N" at the zoom-out floor.
+export function getWeekMarkers(range, pixelsPerDay = PIXELS_PER_DAY) {
+  const weekWidth = 7 * pixelsPerDay;
+  const format = weekWidth >= WEEK_LABEL_FULL_MIN_WIDTH
+    ? 'full'
+    : weekWidth >= WEEK_LABEL_ABBR_MIN_WIDTH
+      ? 'abbr'
+      : 'number';
+
   const markers = [];
   let cursor = new Date(range.start.getFullYear(), range.start.getMonth(), 1);
   while (cursor <= range.end) {
@@ -98,10 +114,14 @@ export function getWeekMarkers(range) {
     const daysInMonth = diffInDays(cursor, nextMonth);
     let weekNumber = 1;
     for (let offset = 0; offset < daysInMonth; offset += 7) {
-      markers.push({
-        x: Math.max(0, dateToX(addDays(cursor, offset), range.start)),
-        label: `W${weekNumber}`,
-      });
+      const x = dateToX(addDays(cursor, offset), range.start, pixelsPerDay);
+      if (x + weekWidth > 0) {
+        let label;
+        if (format === 'full') label = `Week ${weekNumber}`;
+        else if (format === 'abbr') label = `W${weekNumber}`;
+        else label = `${weekNumber}`;
+        markers.push({ x: Math.max(0, x), label });
+      }
       weekNumber += 1;
     }
     cursor = nextMonth;
