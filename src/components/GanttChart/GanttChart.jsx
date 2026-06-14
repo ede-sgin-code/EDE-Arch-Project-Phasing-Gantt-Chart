@@ -9,15 +9,26 @@ import './GanttChart.css';
 
 export default function GanttChart({ phases, editMode, pixelsPerDay, onPhaseChange, onAddSubPhase, onAddMainPhase, onReorderMainPhase, onDeletePhase }) {
   const [dragState, setDragState] = useState({ draggedId: null, overId: null });
+  const [collapsedIds, setCollapsedIds] = useState(() => new Set());
   const range = getProjectDateRange(phases);
   const chartWidth = dateToX(range.end, range.start, pixelsPerDay);
   const labelWidth = editMode ? LABEL_WIDTH_EDITING : LABEL_WIDTH;
   const rowHeight = editMode ? ROW_HEIGHT_EDITING : ROW_HEIGHT;
   const totalWidth = labelWidth + chartWidth;
-  const dataBodyHeight = phases.length * rowHeight;
+  const visiblePhases = phases.filter((p) => !(p.parentId && collapsedIds.has(p.parentId)));
+  const dataBodyHeight = visiblePhases.length * rowHeight;
   const bodyHeight = dataBodyHeight + (editMode ? rowHeight : 0);
   const monthMarkers = getMonthMarkers(range, pixelsPerDay);
   const weekMarkers = getWeekMarkers(range, pixelsPerDay);
+
+  function toggleCollapse(phaseId) {
+    setCollapsedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(phaseId)) next.delete(phaseId);
+      else next.add(phaseId);
+      return next;
+    });
+  }
 
   function handleRowDragStart(phaseId) {
     setDragState({ draggedId: phaseId, overId: null });
@@ -45,7 +56,7 @@ export default function GanttChart({ phases, editMode, pixelsPerDay, onPhaseChan
         </div>
       </div>
       <div className="gantt-body" style={{ height: bodyHeight }}>
-        {phases.map((phase) => (
+        {visiblePhases.map((phase) => (
           <PhaseRow
             key={phase.id}
             phase={phase}
@@ -62,6 +73,9 @@ export default function GanttChart({ phases, editMode, pixelsPerDay, onPhaseChan
             onRowDragOver={handleRowDragOver}
             onRowDrop={handleRowDrop}
             onRowDragEnd={handleRowDragEnd}
+            hasSubPhases={phase.type === 'main' && phases.some((p) => p.parentId === phase.id)}
+            isCollapsed={collapsedIds.has(phase.id)}
+            onToggleCollapse={toggleCollapse}
           />
         ))}
         {editMode && <AddPhaseRow rowHeight={rowHeight} labelWidth={labelWidth} onAdd={onAddMainPhase} />}

@@ -4,7 +4,7 @@ import { MIN_BAR_WIDTH_FOR_DATE_LABELS } from '../../lib/ganttConfig';
 import { getContrastTextColor } from '../../lib/colorUtils';
 import ColorPicker from './ColorPicker';
 
-export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase, dragState, onRowDragStart, onRowDragOver, onRowDrop, onRowDragEnd }) {
+export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase, dragState, onRowDragStart, onRowDragOver, onRowDrop, onRowDragEnd, hasSubPhases, isCollapsed, onToggleCollapse }) {
   const dragRef = useRef(null);
   const [addingSubPhase, setAddingSubPhase] = useState(false);
   const [subPhaseName, setSubPhaseName] = useState('');
@@ -273,6 +273,16 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
               + Add Sub-Phase
             </button>
           )
+        )}
+        {phase.type === 'main' && hasSubPhases && (
+          <button
+            type="button"
+            className="row-collapse-toggle"
+            onClick={() => onToggleCollapse(phase.id)}
+            title={isCollapsed ? 'Expand sub-phases' : 'Collapse sub-phases'}
+          >
+            {isCollapsed ? '▾' : '▴'}
+          </button>
         )}
       </div>
       <div className="gantt-timeline-cell">
