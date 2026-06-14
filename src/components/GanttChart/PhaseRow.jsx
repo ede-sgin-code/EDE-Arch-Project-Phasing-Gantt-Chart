@@ -277,12 +277,10 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
         {phase.type === 'main' && hasSubPhases && (
           <button
             type="button"
-            className="row-collapse-toggle"
+            className={`row-collapse-toggle${isCollapsed ? ' is-collapsed' : ''}`}
             onClick={() => onToggleCollapse(phase.id)}
             title={isCollapsed ? 'Expand sub-phases' : 'Collapse sub-phases'}
-          >
-            {isCollapsed ? '▾' : '▴'}
-          </button>
+          />
         )}
       </div>
       <div className="gantt-timeline-cell">

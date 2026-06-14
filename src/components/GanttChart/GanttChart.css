@@ -60,23 +60,58 @@
   bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 14px;
+  width: 28px;
+  height: 12px;
   border: none;
   background: transparent;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  line-height: 1;
+  padding: 0;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .row-collapse-toggle:hover {
   background: rgba(0, 0, 0, 0.06);
-  color: var(--color-text);
+}
+
+/* Wide, flat chevron built from two short bars meeting at a point. */
+.row-collapse-toggle::before,
+.row-collapse-toggle::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  width: 13px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-text-muted);
+}
+
+.row-collapse-toggle:hover::before,
+.row-collapse-toggle:hover::after {
+  background: var(--color-text);
+}
+
+/* Default (expanded): chevron points up, vertex at top — click to collapse. */
+.row-collapse-toggle::before {
+  left: 1px;
+  transform: rotate(-32deg);
+  transform-origin: right center;
+}
+
+.row-collapse-toggle::after {
+  right: 1px;
+  transform: rotate(32deg);
+  transform-origin: left center;
+}
+
+/* Collapsed: chevron points down, vertex at bottom — click to expand. */
+.row-collapse-toggle.is-collapsed::before {
+  transform: rotate(32deg);
+  transform-origin: right center;
+}
+
+.row-collapse-toggle.is-collapsed::after {
+  transform: rotate(-32deg);
+  transform-origin: left center;
 }
 
 .gantt-timeline-cell {
