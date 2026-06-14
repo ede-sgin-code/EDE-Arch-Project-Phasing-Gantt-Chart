@@ -13,6 +13,8 @@ export default function GanttView({
   onCancel,
   onPhaseChange,
   onAddSubPhase,
+  onAddMainPhase,
+  onReorderMainPhase,
   onDeletePhase,
 }) {
   const scrollRef = useRef(null);
@@ -104,6 +106,8 @@ export default function GanttView({
           pixelsPerDay={pixelsPerDay}
           onPhaseChange={onPhaseChange}
           onAddSubPhase={onAddSubPhase}
+          onAddMainPhase={onAddMainPhase}
+          onReorderMainPhase={onReorderMainPhase}
           onDeletePhase={onDeletePhase}
         />
       </div>

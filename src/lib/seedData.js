@@ -11,6 +11,8 @@ export const DEFAULT_MAIN_PHASES = [
 
 export const SUB_PHASE_DEFAULT_COLOR = '#CBD5E1';
 
+export const NEW_MAIN_PHASE_COLOR = '#94A3B8';
+
 export function lightenColor(hex, amount = 0.5) {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -37,6 +39,10 @@ function emptyPhase(name, color) {
     locked: false,
     percentComplete: 0,
   };
+}
+
+export function createMainPhase(name, color = NEW_MAIN_PHASE_COLOR) {
+  return emptyPhase(name, color);
 }
 
 export function createSubPhase(name, parentId, color = SUB_PHASE_DEFAULT_COLOR, startDate = null) {

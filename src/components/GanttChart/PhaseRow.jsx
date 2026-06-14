@@ -4,7 +4,7 @@ import { MIN_BAR_WIDTH_FOR_DATE_LABELS } from '../../lib/ganttConfig';
 import { getContrastTextColor } from '../../lib/colorUtils';
 import ColorPicker from './ColorPicker';
 
-export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase }) {
+export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth, pixelsPerDay, onPhaseChange, onAddSubPhase, onDeletePhase, dragState, onRowDragStart, onRowDragOver, onRowDrop, onRowDragEnd }) {
   const dragRef = useRef(null);
   const [addingSubPhase, setAddingSubPhase] = useState(false);
   const [subPhaseName, setSubPhaseName] = useState('');
@@ -147,10 +147,49 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
 
   const draggable = editMode && !phase.locked && hasDates;
 
+  const isDragging = dragState.draggedId === phase.id
+    || (phase.type === 'sub' && dragState.draggedId === phase.parentId);
+  const isDropTarget = phase.type === 'main' && dragState.overId === phase.id && dragState.draggedId !== phase.id;
+  const rowClassName = [
+    'gantt-row',
+    phase.type === 'sub' ? 'gantt-row-sub' : '',
+    isDragging ? 'gantt-row-dragging' : '',
+    isDropTarget ? 'gantt-row-drop-target' : '',
+  ].filter(Boolean).join(' ');
+
+  function handleRowDragOver(e) {
+    if (phase.type !== 'main' || !editMode) return;
+    e.preventDefault();
+    onRowDragOver(phase.id);
+  }
+
+  function handleRowDrop(e) {
+    if (phase.type !== 'main' || !editMode) return;
+    e.preventDefault();
+    onRowDrop(phase.id);
+  }
+
+  function handleDragHandleStart(e) {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', phase.id);
+    onRowDragStart(phase.id);
+  }
+
   return (
-    <div className={`gantt-row${phase.type === 'sub' ? ' gantt-row-sub' : ''}`} style={{ height: rowHeight }}>
+    <div className={rowClassName} style={{ height: rowHeight }} onDragOver={handleRowDragOver} onDrop={handleRowDrop}>
       <div className="gantt-label-cell" style={{ flexBasis: labelWidth, width: labelWidth }}>
         <div className="phase-label-top">
+          {editMode && phase.type === 'main' && (
+            <span
+              className="drag-handle"
+              draggable
+              onDragStart={handleDragHandleStart}
+              onDragEnd={onRowDragEnd}
+              title="Drag to reorder"
+            >
+              {'☰'}
+            </span>
+          )}
           {editMode ? (
             <input type="text" className="phase-name-input" value={phase.name} onChange={handleNameChange} />
           ) : (

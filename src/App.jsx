@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import GanttView from './components/GanttView/GanttView';
 import { loadData, saveData, resetToDemoData } from './lib/storage';
-import { createProject, createSubPhase, lightenColor } from './lib/seedData';
+import { createProject, createSubPhase, createMainPhase, lightenColor } from './lib/seedData';
 import './App.css';
 
 // Re-sorts the sub-phases under `parentId` by start date (phases with no
@@ -123,6 +123,34 @@ function App() {
     });
   }
 
+  function handleAddMainPhase(name) {
+    setDraftPhases((phases) => [...phases, createMainPhase(name)]);
+  }
+
+  // Groups the flat phase array into contiguous [main phase, ...its sub-phases]
+  // blocks, moves the dragged main phase's block to where the target main
+  // phase's block sits, then flattens back to a single array. Moving the
+  // block as a unit keeps sub-phases grouped with their parent.
+  function handleReorderMainPhase(draggedId, targetId) {
+    if (draggedId === targetId) return;
+    setDraftPhases((phases) => {
+      const blocks = [];
+      for (const p of phases) {
+        if (p.type === 'main') {
+          blocks.push({ id: p.id, items: [p] });
+        } else {
+          blocks[blocks.length - 1].items.push(p);
+        }
+      }
+      const fromIndex = blocks.findIndex((b) => b.id === draggedId);
+      const toIndex = blocks.findIndex((b) => b.id === targetId);
+      if (fromIndex === -1 || toIndex === -1) return phases;
+      const [moved] = blocks.splice(fromIndex, 1);
+      blocks.splice(toIndex, 0, moved);
+      return blocks.flatMap((b) => b.items);
+    });
+  }
+
   function handleDeletePhase(phaseId) {
     setDraftPhases((phases) => phases.filter((p) => p.id !== phaseId && p.parentId !== phaseId));
   }
@@ -155,6 +183,8 @@ function App() {
         onCancel={handleCancel}
         onPhaseChange={handlePhaseChange}
         onAddSubPhase={handleAddSubPhase}
+        onAddMainPhase={handleAddMainPhase}
+        onReorderMainPhase={handleReorderMainPhase}
         onDeletePhase={handleDeletePhase}
       />
     </div>
