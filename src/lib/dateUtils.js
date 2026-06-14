@@ -100,7 +100,7 @@ export function getWeekMarkers(range) {
     for (let offset = 0; offset < daysInMonth; offset += 7) {
       markers.push({
         x: Math.max(0, dateToX(addDays(cursor, offset), range.start)),
-        label: `Week ${weekNumber}`,
+        label: `W${weekNumber}`,
       });
       weekNumber += 1;
     }

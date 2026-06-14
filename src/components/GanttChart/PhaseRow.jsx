@@ -254,17 +254,17 @@ export default function PhaseRow({ phase, range, editMode, rowHeight, labelWidth
               {showInlineDates && (
                 <>
                   <span className="bar-date-label bar-date-start" style={{ color: textColor }}>
-                    [{startLabel}
+                    • {startLabel}
                   </span>
                   <span className="bar-date-label bar-date-end" style={{ color: textColor }}>
-                    {endLabel}]
+                    {endLabel} •
                   </span>
                 </>
               )}
             </div>
             {!showInlineDates && (
               <div className="bar-date-tooltip" style={{ left: barLeft + barWidth / 2 }}>
-                [{startLabel} - {endLabel}]
+                • {startLabel} - {endLabel} •
               </div>
             )}
             {status && (
